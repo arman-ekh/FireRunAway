@@ -66,6 +66,8 @@ void Renderer::update_floor() {
     }
     else if (IsKeyPressed(KEY_T)) {
         user_type = UserType::EXIT;
+    }else if (IsKeyPressed(KEY_Y)) {
+        user_type = UserType::CORRIDOR;
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -89,6 +91,8 @@ void Renderer::update_floor() {
         }
         else if (user_type == UserType::WALL) {
             cell->set_cell_type(CellType::Wall);
+        }else if (user_type == UserType::CORRIDOR) {
+            cell->set_cell_type(CellType::Corridor);
         }
     }
 }

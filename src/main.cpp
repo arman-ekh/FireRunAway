@@ -1,8 +1,6 @@
 #include "enviroment/Floor.h"
 #include "raylib.h"
 #include "visualization/renderer.h"
-#include <string>
-
 
 int main(){
     const int screenWidth = 1080;
