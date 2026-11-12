@@ -11,7 +11,13 @@ enum class CellType{
 
 
 class Cell{
+    /*
+        each cell contains data about what its inside it.
+    */
+
     public:
+        Cell();
+
         bool isWalkable() const;
         Cell(int x, int y, int floor , CellType type);
         

@@ -12,9 +12,9 @@ int main(){
     while (!WindowShouldClose()) {
         BeginDrawing();
 
-        ClearBackground((Color){110,65,125});
+        ClearBackground((Color){25,65,125});
 
-        DrawText("Hello Raylib!", 280, 280, 30, WHITE);
+        DrawText("Hello Raylib!", 280, 280, 30, BLACK);
 
         EndDrawing();
     }
