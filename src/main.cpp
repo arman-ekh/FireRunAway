@@ -1,7 +1,7 @@
 #include "enviroment/Floor.h"
 #include "raylib.h"
 #include "visualization/renderer.h"
-
+#include <string>
 
 
 int main(){
@@ -17,12 +17,12 @@ int main(){
     renderer.set_floor_ptr(&floor);
 
 
-
     while (!WindowShouldClose()) {
         BeginDrawing();
 
         ClearBackground(WHITE);
         renderer.draw_floor();
+        renderer.update_floor();
 
 
         EndDrawing();

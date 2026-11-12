@@ -3,15 +3,27 @@
 
 #include "../enviroment/Floor.h"
 
+
+enum class UserType{
+    VOID,
+    WALL,
+    ROOM,
+    STAIR,
+    CORRIDOR,
+    EXIT
+};
+
 class Renderer{
     private:
         Floor* floor;
-        
+        UserType user_type;
+        Cell* get_cell(float mouse_x , float mouse_y);        
 
     public:
         Renderer();
         void set_floor_ptr(Floor* floor);
         void draw_floor();
+        void update_floor();
 };
 
 

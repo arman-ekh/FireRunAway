@@ -19,6 +19,10 @@ Cell::Cell(int x , int y , int floor , CellType type){
     this->temperature = NORMAL_TEMP;
 }
 
+void Cell::set_cell_type(CellType type){
+    this->type = type;
+}
+
 bool Cell::isWalkable()const{
 
     return (CellType::Wall != type && !blocked);

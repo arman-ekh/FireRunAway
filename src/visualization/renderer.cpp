@@ -1,10 +1,12 @@
 #include "renderer.h"
 #include <raylib.h>
+#include <iostream>
 
 #define cube_size 50
 
 Renderer::Renderer(){
     this->floor = nullptr;
+    user_type = UserType::VOID;
 };
 
 void Renderer::set_floor_ptr(Floor* floor){
@@ -24,23 +26,81 @@ void Renderer::draw_floor(){
                 continue;
             }
             CellType type =  cell->get_celltype();
-            Rectangle rec = (Rectangle){static_cast<float>(i*cube_size) , static_cast<float>(j*cube_size) , cube_size , cube_size};
+            Rectangle rec = (Rectangle){static_cast<float>(j*cube_size) , static_cast<float>(i*cube_size) , cube_size , cube_size};
 
             if(type== CellType::Void){
-                DrawRectangle( i * cube_size , j * cube_size, cube_size,cube_size, GRAY);
+                DrawRectangle( j * cube_size , i * cube_size, cube_size,cube_size, GRAY);
             }else if (type == CellType::Exit) {
-                DrawRectangle( i * cube_size , j * cube_size, cube_size, cube_size, RED);
+                DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, RED);
             }else if (type == CellType::Room) {
-                DrawRectangle( i * cube_size , j * cube_size, cube_size, cube_size, BLUE);
+                DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, BLUE);
             }else if (type == CellType::Staircase) {
-                DrawRectangle( i * cube_size , j * cube_size, cube_size, cube_size, GREEN);
+                DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, GREEN);
             }else if (type == CellType::Wall) {
-                DrawRectangle( i * cube_size , j * cube_size, cube_size, cube_size, BROWN);
+                DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, BROWN);
             }else if(type == CellType::Corridor){
-                DrawRectangle( i * cube_size , j * cube_size, cube_size, cube_size, DARKBROWN);
+                DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, DARKBROWN);
             }
             DrawRectangleLinesEx(rec, 2, WHITE);
 
         }
     }
+}
+
+void Renderer::update_floor() {
+    if (floor == nullptr) {
+        return;
+    }
+
+    if (IsKeyPressed(KEY_Q)) {
+        user_type = UserType::VOID;
+    }
+    else if (IsKeyPressed(KEY_W)) {
+        user_type = UserType::WALL;
+    }
+    else if (IsKeyPressed(KEY_E)) {
+        user_type = UserType::ROOM;
+    }
+    else if (IsKeyPressed(KEY_R)) {
+        user_type = UserType::STAIR;
+    }
+    else if (IsKeyPressed(KEY_T)) {
+        user_type = UserType::EXIT;
+    }
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        Cell* cell = get_cell(GetMouseX(), GetMouseY());
+
+        if (cell == nullptr) {
+            return;
+        }
+
+        if (user_type == UserType::VOID) {
+            cell->set_cell_type(CellType::Void);
+        }
+        else if (user_type == UserType::EXIT) {
+            cell->set_cell_type(CellType::Exit);
+        }
+        else if (user_type == UserType::ROOM) {
+            cell->set_cell_type(CellType::Room);
+        }
+        else if (user_type == UserType::STAIR) {
+            cell->set_cell_type(CellType::Staircase);
+        }
+        else if (user_type == UserType::WALL) {
+            cell->set_cell_type(CellType::Wall);
+        }
+    }
+}
+
+
+Cell* Renderer::get_cell(float mouse_x , float mouse_y){
+    if (floor == nullptr) {
+        return nullptr;
+    }
+    
+    int col = mouse_x / cube_size;
+    int row = mouse_y / cube_size;
+
+    return floor->get_cell_ptr(row, col);
 }

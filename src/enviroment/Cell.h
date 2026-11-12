@@ -31,6 +31,7 @@ class Cell{
         int get_y();
         int get_floor_num();
         CellType get_celltype();
+        void set_cell_type(CellType type);
 
 
     private:
