@@ -2,7 +2,9 @@
 
 #define NORMAL_TEMP 30
 
-Cell::Cell(){}
+Cell::Cell(){
+    type = CellType::Void;
+}
 
 Cell::Cell(int x , int y , int floor , CellType type){
     

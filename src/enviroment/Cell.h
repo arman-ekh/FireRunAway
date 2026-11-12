@@ -6,7 +6,8 @@ enum class CellType{
     Wall,
     Corridor,
     Staircase,
-    Exit
+    Exit,
+    Void
 };
 
 
