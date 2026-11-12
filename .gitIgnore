@@ -1,0 +1,24 @@
+# Build files
+build/
+cmake-build-*/
+
+# Cache
+.cache/
+
+# IDE
+.idea/
+.vscode/
+
+# Compiled files
+*.o
+*.obj
+*.a
+*.so
+*.dll
+*.exe
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
