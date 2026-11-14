@@ -1,6 +1,6 @@
 #include "renderer.h"
 #include <raylib.h>
-#include <iostream>
+
 
 #define cube_size 50
 
