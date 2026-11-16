@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include <raylib.h>
+#include <iostream>
 
 
 #define cube_size 50
@@ -38,6 +39,7 @@ void Renderer::draw_floor(){
                 DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, GREEN);
             }else if (type == CellType::Wall) {
                 DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, BROWN);
+                draw_wall(j , i);
             }else if(type == CellType::Corridor){
                 DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, DARKBROWN);
             }
@@ -47,11 +49,7 @@ void Renderer::draw_floor(){
     }
 }
 
-void Renderer::update_floor() {
-    if (floor == nullptr) {
-        return;
-    }
-
+void Renderer::handle_user_input(){
     if (IsKeyPressed(KEY_Q)) {
         user_type = UserType::VOID;
     }
@@ -69,6 +67,14 @@ void Renderer::update_floor() {
     }else if (IsKeyPressed(KEY_Y)) {
         user_type = UserType::CORRIDOR;
     }
+}
+
+void Renderer::update_floor() {
+    if (floor == nullptr) {
+        return;
+    }
+    
+    handle_user_input();
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         Cell* cell = get_cell(GetMouseX(), GetMouseY());
@@ -108,3 +114,54 @@ Cell* Renderer::get_cell(float mouse_x , float mouse_y){
 
     return floor->get_cell_ptr(row, col);
 }
+
+
+bool is_valid_cordinate(int x ,int y , int floor_width ,int floor_height){
+    if(x < 0 || x >=floor_width || y < 0 || y >= floor_height) return false;
+    else return true;
+}
+
+
+void Renderer::draw_wall(int x , int y){
+    int floor_width = floor->get_floor_column_count();
+    int floor_height = floor->get_floor_row_count();
+    
+    if(!is_valid_cordinate(x, y,floor_width , floor_height)){
+        return;
+    }
+
+    bool neighbours_map[4];
+    /*
+        0 = north wall 
+        1 = west wall 
+        2 = south wall
+        3 = east wall
+    */
+    int neighbour_num = 0;
+    
+    for(int j = -1 ; j < 2 ; j+=2 ){
+        // north and south wall
+        int new_x = x ;            
+        int new_y = y + j;
+        if(is_valid_cordinate(new_x, new_y, floor_width,  floor_height)){
+            CellType type = floor->get_cell_ptr(new_y, new_x)->get_celltype();
+            bool is_wall = (type == CellType::Wall) ? true : false;
+            neighbours_map[(j+1)/2] = is_wall;
+            if(is_wall) neighbour_num++;
+        }
+        
+        //east and west wall
+        new_x = x + j;
+        new_y = y ;
+        if(is_valid_cordinate(new_x, new_y, floor_width,  floor_height)){
+            CellType type = floor->get_cell_ptr(new_y, new_x)->get_celltype();
+            bool is_wall = (type == CellType::Wall) ? true : false;
+            neighbours_map[(j+1)/2 + 1] = is_wall;
+            if(is_wall) neighbour_num++;
+        }
+    }
+      
+    DrawText(TextFormat("%d", neighbour_num),x * cube_size + 17,y * cube_size + 15,20,BLACK);
+}
+
+

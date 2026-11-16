@@ -19,7 +19,9 @@ class Renderer{
         UserType user_type;
         Cell* get_cell(float mouse_x , float mouse_y);  
         void draw_wall(Cell* cell);      
-
+        void draw_wall(int x , int y);
+        void handle_user_input();
+        
     public:
         Renderer();
         void set_floor_ptr(Floor* floor);
