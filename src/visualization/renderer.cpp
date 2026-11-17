@@ -33,17 +33,18 @@ void Renderer::draw_floor(){
                 DrawRectangle( j * cube_size , i * cube_size, cube_size,cube_size, GRAY);
             }else if (type == CellType::Exit) {
                 DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, RED);
-            }else if (type == CellType::Room) {
+            }else if (type == CellType::Room) {    
                 DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, BLUE);
+                draw_wall(j , i , type , LIGHTGRAY);
             }else if (type == CellType::Staircase) {
                 DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, GREEN);
             }else if (type == CellType::Wall) {
                 DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, BROWN);
-                draw_wall(j , i);
+                draw_wall(j , i , type , BLACK);
             }else if(type == CellType::Corridor){
                 DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, DARKBROWN);
             }
-            if(type != CellType::Wall){
+            if(type == CellType::Void){
                 DrawRectangleLinesEx(rec, 2, WHITE);
             }
             
@@ -125,7 +126,7 @@ bool is_valid_cordinate(int x ,int y , int floor_width ,int floor_height){
 }
 
 
-void Renderer::draw_wall(int x , int y){
+void Renderer::draw_wall(int x , int y , CellType check_type , Color color){
     int floor_width = floor->get_floor_column_count();
     int floor_height = floor->get_floor_row_count();
     
@@ -148,7 +149,7 @@ void Renderer::draw_wall(int x , int y){
         int new_y = y + j;
         if(is_valid_cordinate(new_x, new_y, floor_width,  floor_height)){
             CellType type = floor->get_cell_ptr(new_y, new_x)->get_celltype();
-            bool is_wall = (type == CellType::Wall) ? true : false;
+            bool is_wall = (type == check_type) ? true : false;
             neighbours_map[(j+1)/2] = is_wall;
             if(is_wall) neighbour_num++;
         }
@@ -158,25 +159,23 @@ void Renderer::draw_wall(int x , int y){
         new_y = y ;
         if(is_valid_cordinate(new_x, new_y, floor_width,  floor_height)){
             CellType type = floor->get_cell_ptr(new_y, new_x)->get_celltype();
-            bool is_wall = (type == CellType::Wall) ? true : false;
+            bool is_wall = (type == check_type) ? true : false;
             neighbours_map[((j+1)/2) + 2] = is_wall;
             if(is_wall) neighbour_num++;
         }
-    }
-      
-    DrawText(TextFormat("%d", neighbour_num),x * cube_size + 17,y * cube_size + 15,20,BLACK);
-    
+    }  
+    //DrawText(TextFormat("%d", neighbour_num),x * cube_size + 17,y * cube_size + 15,20,color);
     if(!neighbours_map[0]){   
-        DrawRectangle(x*cube_size, y * cube_size  , cube_size, cube_size/5, BLACK);
+        DrawRectangle(x*cube_size, y * cube_size  , cube_size, cube_size/8, color);
     }
     if(!neighbours_map[1]){
-        DrawRectangle(x*cube_size, y * cube_size + cube_size - cube_size/5 , cube_size, cube_size/5, BLACK);
+        DrawRectangle(x*cube_size, y * cube_size + cube_size - cube_size/8 , cube_size, cube_size/8, color);
     }
     if(!neighbours_map[2]){
-        DrawRectangle(x*cube_size, y * cube_size  , cube_size/5, cube_size, BLACK);
+        DrawRectangle(x*cube_size, y * cube_size  , cube_size/8, cube_size, color);
     }
     if(!neighbours_map[3]){
-        DrawRectangle(x*cube_size + cube_size - cube_size/5, y * cube_size  , cube_size/5, cube_size, BLACK);
+        DrawRectangle(x*cube_size + cube_size - cube_size/8, y * cube_size  , cube_size/8, cube_size, color);
     }    
 }
 
