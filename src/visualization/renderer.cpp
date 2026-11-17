@@ -1,6 +1,6 @@
 #include "renderer.h"
 #include <raylib.h>
-#include <iostream>
+
 
 
 #define cube_size 50
@@ -43,7 +43,10 @@ void Renderer::draw_floor(){
             }else if(type == CellType::Corridor){
                 DrawRectangle( j * cube_size , i * cube_size, cube_size, cube_size, DARKBROWN);
             }
-            DrawRectangleLinesEx(rec, 2, WHITE);
+            if(type != CellType::Wall){
+                DrawRectangleLinesEx(rec, 2, WHITE);
+            }
+            
 
         }
     }
@@ -73,7 +76,7 @@ void Renderer::update_floor() {
     if (floor == nullptr) {
         return;
     }
-    
+
     handle_user_input();
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -130,11 +133,11 @@ void Renderer::draw_wall(int x , int y){
         return;
     }
 
-    bool neighbours_map[4];
+    bool neighbours_map[4] = {false , false , false , false};
     /*
         0 = north wall 
-        1 = west wall 
-        2 = south wall
+        1 = south wall 
+        2 = wesr wall
         3 = east wall
     */
     int neighbour_num = 0;
@@ -156,12 +159,25 @@ void Renderer::draw_wall(int x , int y){
         if(is_valid_cordinate(new_x, new_y, floor_width,  floor_height)){
             CellType type = floor->get_cell_ptr(new_y, new_x)->get_celltype();
             bool is_wall = (type == CellType::Wall) ? true : false;
-            neighbours_map[(j+1)/2 + 1] = is_wall;
+            neighbours_map[((j+1)/2) + 2] = is_wall;
             if(is_wall) neighbour_num++;
         }
     }
       
     DrawText(TextFormat("%d", neighbour_num),x * cube_size + 17,y * cube_size + 15,20,BLACK);
+    
+    if(!neighbours_map[0]){   
+        DrawRectangle(x*cube_size, y * cube_size  , cube_size, cube_size/5, BLACK);
+    }
+    if(!neighbours_map[1]){
+        DrawRectangle(x*cube_size, y * cube_size + cube_size - cube_size/5 , cube_size, cube_size/5, BLACK);
+    }
+    if(!neighbours_map[2]){
+        DrawRectangle(x*cube_size, y * cube_size  , cube_size/5, cube_size, BLACK);
+    }
+    if(!neighbours_map[3]){
+        DrawRectangle(x*cube_size + cube_size - cube_size/5, y * cube_size  , cube_size/5, cube_size, BLACK);
+    }    
 }
 
 
